@@ -1,0 +1,56 @@
+[package]
+name = "prometheus-server"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Prometheus AI edge ML orchestrator — main application server"
+
+[[bin]]
+name = "prometheus-server"
+path = "src/main.rs"
+
+[dependencies]
+prometheus-ui = { workspace = true }
+prometheus-training = { workspace = true }
+prometheus-reports = { workspace = true }
+prometheus-shield = { workspace = true }
+prometheus-email = { workspace = true }
+aegis-client = { workspace = true }
+axonml-quant = { workspace = true }
+axonml-tensor = { workspace = true }
+
+axum = { workspace = true }
+axum-extra = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+tokio = { workspace = true }
+tokio-tungstenite = "0.26"
+futures = { workspace = true }
+
+leptos = { workspace = true }
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+reqwest = { workspace = true }
+
+
+chrono = { workspace = true }
+uuid = { workspace = true }
+csv = { workspace = true }
+
+totp-rs = { workspace = true }
+hmac = { workspace = true }
+data-encoding = { workspace = true }
+base64 = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+rand = { workspace = true }
+
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+zstd = "0.13"

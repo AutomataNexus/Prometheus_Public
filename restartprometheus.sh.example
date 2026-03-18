@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# =============================================================================
+# Prometheus Deploy Script (Example)
+# Copy to restartprometheus.sh and fill in your values.
+# =============================================================================
+set -euo pipefail
+
+# Load secrets from HashiCorp Vault
+source "$(dirname "$0")/vault/env.sh" quiet
+
+REMOTE="devops@YOUR_SERVER_IP"
+SUDO_PASS='YOUR_SUDO_PASSWORD'
+PROJECT="/opt/Prometheus"
+UI_DIR="$PROJECT/crates/prometheus-ui"
+BINARY="$PROJECT/target/release/prometheus-server"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+step() { echo -e "\n${CYAN}[$1/$TOTAL] $2${NC}"; }
+ok()   { echo -e "${GREEN}  done${NC}"; }
+fail() { echo -e "${RED}  FAILED${NC}"; exit 1; }
+
+TOTAL=6
+
+# 1 — Stop remote server
+step 1 "Stopping prometheus-server..."
+ssh "$REMOTE" "pm2 delete prometheus-server 2>/dev/null || true" && ok || fail
+
+# 2 — Build server
+step 2 "Building prometheus-server (release)..."
+cargo build --release -p prometheus-server --manifest-path "$PROJECT/Cargo.toml" 2>&1 | tail -5 && ok || fail
+
+# 3 — Build UI
+step 3 "Building prometheus-ui (trunk release)..."
+(cd "$UI_DIR" && trunk build --release 2>&1 | tail -5) && ok || fail
+
+# 4 — Deploy binary
+step 4 "Deploying binary..."
+scp "$BINARY" "$REMOTE:/tmp/prometheus-server-new" && \
+ssh "$REMOTE" 'echo '"'"'$SUDO_PASS'"'"' | sudo -S cp /tmp/prometheus-server-new /opt/prometheus-server-bin && rm /tmp/prometheus-server-new' && ok || fail
+
+# 5 — Deploy frontend
+step 5 "Deploying frontend..."
+scp -r "$UI_DIR/dist/"* "$REMOTE:/home/devops/dist/" && ok || fail
+
+# 6 — Restart with Vault-sourced env vars
+step 6 "Restarting prometheus-server..."
+ssh "$REMOTE" "PROMETHEUS_PUBLIC_URL=\${PROMETHEUS_PUBLIC_URL} \
+DO_GENAI_ENDPOINT=\${DO_GENAI_ENDPOINT} \
+DO_GENAI_ACCESS_KEY=\${DO_GENAI_ACCESS_KEY} \
+GRADIENT_AGENT_ID=\${GRADIENT_AGENT_ID} \
+RESEND_API_KEY=\${RESEND_API_KEY} \
+STRIPE_SECRET_KEY=\${STRIPE_SECRET_KEY} \
+STRIPE_WEBHOOK_SECRET=\${STRIPE_WEBHOOK_SECRET} \
+STRIPE_PRICE_BASIC=\${STRIPE_PRICE_BASIC} \
+STRIPE_PRICE_PRO=\${STRIPE_PRICE_PRO} \
+STRIPE_PRICE_ENTERPRISE=\${STRIPE_PRICE_ENTERPRISE} \
+STRIPE_METER_ID=\${STRIPE_METER_ID} \
+STRIPE_PRICE_OVERAGE=\${STRIPE_PRICE_OVERAGE} \
+PROMETHEUS_VAULT_KEY=\${PROMETHEUS_VAULT_KEY} \
+pm2 start /opt/prometheus-server-bin --name prometheus-server && pm2 save" && ok || fail
+
+echo -e "\n${GREEN}Prometheus deployed and running.${NC}"

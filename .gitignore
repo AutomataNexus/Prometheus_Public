@@ -1,0 +1,110 @@
+# Build artifacts
+/target/
+/dist/
+*.wasm
+*.d
+
+# Rust
+**/*.rs.bk
+Cargo.lock
+
+# Pre-built binaries
+prometheus-server-bin
+
+# Secrets & credentials
+.secrets/
+*.p8
+*.jks
+*.pem
+*.key
+credentials.json
+google-services.json
+*.env
+.env.*
+!.env.example
+!crates/prometheus-agent/.env.example
+
+# HashiCorp Vault (secrets, data, keys — NEVER commit)
+vault/data/
+vault/.vault-keys
+vault/vault.pid
+vault/vault.log
+
+# Internal docs and deployment config (not for public repo)
+Internal_docs/
+PRD.md
+restartprometheus.sh
+
+# Node / Mobile
+node_modules/
+.expo/
+*.tsbuildinfo
+mobile/
+
+# Python virtualenvs
+tools/converter-venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# ML model files (runtime/generated)
+*.onnx
+*.hef
+*.axonml
+*.ozl
+
+# OS files
+.DS_Store
+Thumbs.db
+*.Zone.Identifier
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code
+.claude/
+
+# Data & models (runtime)
+/data/
+/models/
+
+# Datasets (large binary/CSV collections)
+/opt/datasets/
+tools/bulk_ingest/
+tools/converter-venv/
+
+# Compression dictionaries
+*.ozl-dict
+
+# Logs
+*.log
+
+# Media (demo recordings, narration)
+*.mp4
+*.mp3
+*.webm
+screenshots/
+demo-recording/
+
+# Demo/recording tools with credentials (use .example versions)
+tools/record-demo-synced.js
+tools/take-screenshots.js
+tools/cli-auth.sh
+tools/cli-demo.tape
+tools/tui-demo.tape
+tools/record-demo-synced.js
+
+# Package manager lockfiles (puppeteer tests)
+tests/puppeteer/package-lock.json
+package-lock.json
+package.json
+
+# Test artifacts
+tests/e2e/test-results/
+tests/e2e/playwright-report/
+tests/puppeteer/screenshots/
+*.Zone.Identifier

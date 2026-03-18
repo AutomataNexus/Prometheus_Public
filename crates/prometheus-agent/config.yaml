@@ -1,0 +1,52 @@
+# ──────────────────────────────────────────────────────────────
+# Prometheus Agent – Athena configuration
+# ──────────────────────────────────────────────────────────────
+
+agent:
+  name: athena
+  version: "0.1.0"
+  description: >
+    Orchestrator agent for the Prometheus predictive-maintenance platform.
+    Routes requests to specialist sub-agents for data analysis, architecture
+    selection, training orchestration and model evaluation.
+
+model:
+  name: gpt-4o
+  temperature: 0.2
+  max_tokens: 4096
+  top_p: 0.95
+
+knowledge:
+  knowledge_base_id: "${PROMETHEUS_KNOWLEDGE_BASE_ID}"
+  documents:
+    - knowledge/hvac_fault_catalog.md
+    - knowledge/equipment_specs.md
+    - knowledge/axonml_reference.md
+    - knowledge/training_history.md
+
+tools:
+  - name: sensor_analysis
+    module: tools.sensor_analysis
+    description: "Statistical analysis of sensor CSV data"
+  - name: architecture_db
+    module: tools.architecture_db
+    description: "Knowledge-base lookup for best architecture per equipment type"
+  - name: training_trigger
+    module: tools.training_trigger
+    description: "Trigger a Prometheus training run via the platform API"
+  - name: model_evaluator
+    module: tools.model_evaluator
+    description: "Fetch and interpret model evaluation metrics"
+
+intents:
+  - analyze_data
+  - select_architecture
+  - generate_training_plan
+  - evaluate_model
+  - general_chat
+
+defaults:
+  max_conversation_turns: 20
+  timeout_seconds: 120
+  retry_attempts: 3
+  retry_backoff_factor: 2.0

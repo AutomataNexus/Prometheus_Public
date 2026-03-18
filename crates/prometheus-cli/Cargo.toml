@@ -1,0 +1,64 @@
+[package]
+name = "prometheus-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Prometheus CLI/TUI — terminal interface with QR-code auth, training monitor, and OpenZL compression"
+
+[[bin]]
+name = "prometheus"
+path = "src/main.rs"
+
+[dependencies]
+# Async
+tokio = { workspace = true }
+futures = { workspace = true }
+
+# HTTP
+reqwest = { workspace = true }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+toml = "0.8"
+
+# CLI
+clap = { version = "4.4", features = ["derive", "env", "string"] }
+
+# TUI
+ratatui = { version = "0.28", features = ["crossterm"] }
+crossterm = "0.28"
+
+# QR code
+qrcode = "0.14"
+
+# Compression (OpenZL base)
+zstd = "0.13"
+
+# Auth / crypto
+sha2 = { workspace = true }
+hex = { workspace = true }
+base64 = { workspace = true }
+rand = { workspace = true }
+
+# Time & IDs
+chrono = { workspace = true }
+uuid = { workspace = true }
+
+# Error handling
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+
+# Logging
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# Progress & interaction
+indicatif = "0.17"
+dialoguer = "0.11"
+
+# Misc
+dirs = "5"
+open = "5"

@@ -1,0 +1,8 @@
+[build]
+target = "index.html"
+dist = "dist"
+
+[watch]
+ignore = ["target", "tests", "docs"]
+
+[serve]

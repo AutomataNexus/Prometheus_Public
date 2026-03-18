@@ -1,0 +1,107 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/prometheus-server",
+    "crates/prometheus-ui",
+    "crates/prometheus-training",
+    "crates/prometheus-edge",
+    "crates/prometheus-reports",
+    "crates/prometheus-shield",
+    "crates/prometheus-email",
+    "crates/prometheus-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+authors = ["AutomataNexus Development Team"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/AutomataNexus/Prometheus"
+homepage = "https://automatanexus.com"
+
+[workspace.dependencies]
+# Internal crates
+prometheus-ui = { path = "crates/prometheus-ui" }
+prometheus-training = { path = "crates/prometheus-training" }
+prometheus-reports = { path = "crates/prometheus-reports" }
+prometheus-shield = { path = "crates/prometheus-shield" }
+prometheus-email = { path = "crates/prometheus-email" }
+
+# AxonML (from /opt/AxonML)
+axonml-core = { path = "/opt/AxonML/crates/axonml-core" }
+axonml-tensor = { path = "/opt/AxonML/crates/axonml-tensor" }
+axonml-autograd = { path = "/opt/AxonML/crates/axonml-autograd" }
+axonml-nn = { path = "/opt/AxonML/crates/axonml-nn" }
+axonml-optim = { path = "/opt/AxonML/crates/axonml-optim" }
+axonml-data = { path = "/opt/AxonML/crates/axonml-data" }
+axonml-serialize = { path = "/opt/AxonML/crates/axonml-serialize" }
+axonml-quant = { path = "/opt/AxonML/crates/axonml-quant" }
+axonml-vision = { path = "/opt/AxonML/crates/axonml-vision" }
+axonml-text = { path = "/opt/AxonML/crates/axonml-text" }
+axonml-audio = { path = "/opt/AxonML/crates/axonml-audio" }
+axonml-llm = { path = "/opt/AxonML/crates/axonml-llm" }
+axonml-profile = { path = "/opt/AxonML/crates/axonml-profile" }
+axonml-onnx = { path = "/opt/AxonML/crates/axonml-onnx" }
+axonml-jit = { path = "/opt/AxonML/crates/axonml-jit" }
+
+# Aegis-DB (from /opt/Aegis-DB)
+aegis-client = { path = "/opt/Aegis-DB/crates/aegis-client" }
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+async-trait = "0.1"
+futures = "0.3"
+
+# Web framework
+axum = { version = "0.7", features = ["ws", "multipart", "macros"] }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+tower = { version = "0.4", features = ["util"] }
+tower-http = { version = "0.5", features = ["cors", "trace", "fs", "compression-gzip"] }
+
+# Leptos
+leptos = { version = "0.7", features = ["csr"] }
+leptos_router = "0.7"
+leptos_meta = "0.7"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# HTTP client
+reqwest = { version = "0.12", features = ["json", "multipart"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Auth
+
+# Time & IDs
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+
+# Misc
+rand = "0.8"
+csv = "1.3"
+base64 = "0.22"
+totp-rs = { version = "5.6", features = ["gen_secret", "otpauth"] }
+hmac = "0.12"
+data-encoding = "2.6"
+
+# Security (prometheus-shield)
+sqlparser = "0.41"
+sha2 = "0.10"
+hex = "0.4"
+parking_lot = "0.12"
+url = "2"
+aes-gcm = "0.10"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+opt-level = 3

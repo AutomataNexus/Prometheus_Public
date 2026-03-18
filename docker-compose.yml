@@ -1,0 +1,84 @@
+# ═══════════════════════════════════════════════════════════════
+# Prometheus — Docker Compose
+#
+# Services:
+#   prometheus-server  — Main Rust application (Axum + Leptos WASM)
+#   aegis-db           — Aegis-DB multi-paradigm database
+# ═══════════════════════════════════════════════════════════════
+
+version: "3.9"
+
+services:
+  # ── Prometheus Server ─────────────────────────────────────
+  prometheus-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: prometheus-server
+    ports:
+      - "3030:3030"
+    environment:
+      PROMETHEUS_PORT: "3030"
+      PROMETHEUS_HOST: "0.0.0.0"
+      AEGIS_DB_URL: "http://aegis-db:9091"
+      DIGITALOCEAN_API_TOKEN: "${DIGITALOCEAN_API_TOKEN:-}"
+      GRADIENT_MODEL_ACCESS_KEY: "${GRADIENT_MODEL_ACCESS_KEY:-}"
+      GRADIENT_AGENT_ID: "${GRADIENT_AGENT_ID:-}"
+      PUPPETEER_EXECUTABLE_PATH: "/usr/bin/chromium"
+      RUST_LOG: "prometheus_server=info,tower_http=info"
+    depends_on:
+      aegis-db:
+        condition: service_healthy
+    volumes:
+      - prometheus-data:/app/data
+      - prometheus-models:/app/models
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3030/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    networks:
+      - prometheus-net
+
+  # ── Aegis-DB ──────────────────────────────────────────────
+  aegis-db:
+    image: aegis-db:latest
+    build:
+      context: /opt/Aegis-DB
+      dockerfile: Dockerfile
+    container_name: aegis-db
+    ports:
+      - "9091:9091"
+    environment:
+      AEGIS_PORT: "9091"
+      AEGIS_HOST: "0.0.0.0"
+      AEGIS_DATA_DIR: "/var/lib/aegis"
+      AEGIS_AUTH_ENABLED: "true"
+      AEGIS_ADMIN_USER: "${AEGIS_DB_USERNAME:-admin}"
+      AEGIS_ADMIN_PASSWORD: "${AEGIS_DB_PASSWORD:-admin_password}"
+      RUST_LOG: "aegis=info"
+    volumes:
+      - aegis-data:/var/lib/aegis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/health"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    networks:
+      - prometheus-net
+
+volumes:
+  prometheus-data:
+    driver: local
+  prometheus-models:
+    driver: local
+  aegis-data:
+    driver: local
+
+networks:
+  prometheus-net:
+    driver: bridge

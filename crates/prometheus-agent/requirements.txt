@@ -1,0 +1,11 @@
+# Prometheus Agent – Athena
+# DigitalOcean Gradient AI ADK agent dependencies
+
+gradient-adk>=0.4.0,<1.0.0
+langchain>=0.2.0,<1.0.0
+langchain-community>=0.2.0,<1.0.0
+httpx>=0.27.0,<1.0.0
+pandas>=2.2.0,<3.0.0
+numpy>=1.26.0,<3.0.0
+pyyaml>=6.0,<7.0
+python-dotenv>=1.0.0,<2.0.0

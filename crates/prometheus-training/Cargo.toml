@@ -1,0 +1,36 @@
+[package]
+name = "prometheus-training"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Prometheus training pipeline — AxonML 0.4.1 autograd-based model training orchestrator (13 architectures, TrainableModel trait)"
+
+[dependencies]
+axonml-core = { workspace = true }
+axonml-tensor = { workspace = true }
+axonml-autograd = { workspace = true }
+axonml-nn = { workspace = true }
+axonml-optim = { workspace = true }
+axonml-data = { workspace = true }
+axonml-serialize = { workspace = true }
+axonml-quant = { workspace = true }
+axonml-vision = { workspace = true }
+axonml-text = { workspace = true }
+axonml-audio = { workspace = true }
+axonml-llm = { workspace = true }
+axonml-profile = { workspace = true }
+axonml-onnx = { workspace = true }
+axonml-jit = { workspace = true }
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+rand = { workspace = true }
+csv = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
